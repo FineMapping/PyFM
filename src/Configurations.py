@@ -6,15 +6,20 @@ class Configurations:
     def __init__(self, **kwarg):
         self.n_causal = kwarg["n_causal"]
         self.m = kwarg["m"]
+        self.visited_configs = dict()
         self.score_config = kwarg[
             "score_config"
         ]  # method to calculate score for a config
+        # child class should initialize:
+        self.config = None
+        self.current_score = None
 
     def next(self):
         """
         shift self.config to the next configuration or None if no next config
         """
-        raise NotImplementedError
+        self.visited_configs[tuple(self.config)] = self.current_score
+        return None
 
     def ended(self):
         return self.config is None
@@ -26,7 +31,8 @@ class Configurations:
         do - to be called on the config after every iteration
         """
         while not self.ended():
-            do(self)
+            if do is not None:
+                do(self)
             self.next()
 
 
@@ -40,8 +46,8 @@ class AllConfigurations(Configurations):
         initialize vars, including calculating score of the first config
         """
         super().__init__(**kwarg)
-        self.config = (
-            np.arange(self.n_causal) + 1
+        self.config = np.arange(
+            1, self.n_causal + 1
         )  # list of indices of selected variants
         self.current_score = self.score_config(self.config)
         self.best_config = deepcopy(self.config)
@@ -52,6 +58,7 @@ class AllConfigurations(Configurations):
         moves from config (..., p-1, n-k-1, n-k-2, ... n-2, n-1, n) to (..., p, n-k-1, n-k-2, ... n-2, n-1, n) till p <= n-k
         where n = self.n_causal, k = self.m
         """
+        super().next()
         i = (
             self.n_causal
         )  # 1-based index at which config will change, i.e index of p-1 -> p
@@ -65,7 +72,6 @@ class AllConfigurations(Configurations):
                 self.config[i - 1] + 1 + np.arange(self.n_causal - i + 1)
             )
             self.current_score = self.score_config(self.config)
-            print(self.config, self.current_score, self.best_config, self.best_score)
             if self.current_score > self.best_score:
                 self.best_config = deepcopy(self.config)
                 self.best_score = self.current_score
