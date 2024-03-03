@@ -1,10 +1,11 @@
 import numpy as np
 from scipy.linalg import cholesky, cho_solve
 from numpy import log, abs, exp
-from Configurations import ConfigurationsFactory
+from configurations import ConfigurationsFactory
+import time
 
 
-def outputBF(
+def calculate_BFs(
     data,
     n,
     pve_for_prior,
@@ -21,6 +22,8 @@ def outputBF(
     u = (data.pve.values if data.pve is not None else np.ones(data.m)) * (
         n if approx_bf else (n - 1)
     )
+    config_BFs = dict()  # map n_causal to all visited config scores
+    best_configs = dict()  # map n_causal to all visited config scores
     for n_causal in range(1, max_causal + 1):
         config_iter = ConfigurationsFactory(configs_method)(
             n_causal=n_causal,
@@ -29,13 +32,19 @@ def outputBF(
                 t, data, n, pve_for_prior, prior_values, e, n_causal, approx_bf, u
             ),
         )
-
+        tic = time.time()
         config_iter.search(
-            lambda iter: print("config:", iter.config, "score:", iter.current_score)
+            # lambda iter: print("config:", iter.config, "score:", iter.current_score)
+        )
+        print(
+            f"Expored models with {n_causal} causal variant in {time.time() - tic} seconds"
         )
         print("n_causal", n_causal)
         print("best config", config_iter.best_config)
         print("best score", config_iter.best_score)
+        config_BFs[n_causal] = config_iter.visited_configs
+        best_configs[n_causal] = config_iter.best_config
+    return config_BFs, best_configs
 
 
 def config_BF(t, data, n, pve_for_prior, prior_values, e, n_causal, approx_bf, u):
@@ -87,3 +96,14 @@ def exact_BF(z, ld, u, n, e):
 def approx_BF(z, ld, u, e):
     # TODO: implement approx_BF
     pass
+
+
+def calculate_scores(config_scores, n_causal2log_prior, max_BF):
+    # for each model, set scores = log (BF x prior/max_BF)
+    total_score = 0
+    for k in config_scores:
+        for config in config_scores[k]:
+            config = tuple(config)
+            config_scores[k][config] += n_causal2log_prior[k] - max_BF
+            total_score += 10 ** config_scores[k][config]
+    return config_scores, total_score
