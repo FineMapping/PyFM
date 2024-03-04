@@ -49,11 +49,6 @@ def parse_args():
         help=f"choose one causal configurations exploration method from {CONFIGS_IMPL_MAP.keys()}",
         default="AllConfigurations",
     )
-    parser.add_argument(
-        "--rho",
-        help="the cutoff for rho-confidence set",
-        default=0.95,
-    )
     params = parser.parse_args()
     # TODO: Move the code below into a function that can be called if this project is imported as a python library
     n = int(params.sample_number)
@@ -65,7 +60,7 @@ def parse_args():
     # TODO: make sure outdir exists otherwise make folders and subfolders as needed
     outdir = params.outdir
     prior_type = bool(params.prior_type)
-    pve_for_prior = int(params.prior_type) > 0
+    pve_for_prior = int(params.prior_type) > 0 # switch arg for prior_type
     prior_values = np.array([float(x) for x in params.prior_values.split()])
     e = float(params.epsilon)
 
@@ -108,7 +103,7 @@ if __name__ == "__main__":
     ) = parse_args()
 
     # set scores = log(BF)
-    config_scores, best_configs = calculate_BFs(
+    config_scores, max_BF = calculate_BFs(
         data,
         n,
         pve_for_prior,
@@ -124,7 +119,6 @@ if __name__ == "__main__":
     n_causal2log_prior = calculate_priors(data.m, max_causal)
 
     # set scores = log (BF x prior/max_BF)
-    max_BF = max([config_scores[k][tuple(best_configs[k])] for k in config_scores])
     config_scores, total_score = calculate_scores(
         config_scores, n_causal2log_prior, max_BF
     )

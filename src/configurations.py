@@ -1,12 +1,13 @@
 import numpy as np
 from copy import deepcopy
-
+import time
+from collections import defaultdict
 
 class Configurations:
     def __init__(self, **kwarg):
-        self.n_causal = kwarg["n_causal"]
+        self.max_causal = kwarg["max_causal"]
         self.m = kwarg["m"]
-        self.visited_configs = dict()
+        self.visited_config_scores = dict() # stores scores of configs already visited
         self.score_config = kwarg[
             "score_config"
         ]  # method to calculate score for a config
@@ -18,8 +19,7 @@ class Configurations:
         """
         shift self.config to the next configuration or None if no next config
         """
-        self.visited_configs[tuple(self.config)] = self.current_score
-        return None
+        raise NotImplementedError
 
     def ended(self):
         return self.config is None
@@ -30,10 +30,27 @@ class Configurations:
         params:
         do - to be called on the config after every iteration
         """
+        tic = time.time()
+        prev_n_causal = self.n_causal
         while not self.ended():
+            if self.n_causal > prev_n_causal:
+                print(
+                    f"Expored models with {self.n_causal} causal variant in {time.time() - tic} seconds"
+                )
+                print("n_causal", self.n_causal)
+                print("best config", self.best_config)
+                print("best score", self.best_score)
+                tic = time.time()
+                prev_n_causal = self.n_causal
             if do is not None:
                 do(self)
             self.next()
+
+    def get_scores_by_n_causal(self):
+        scores_by_n_causal = defaultdict(dict)
+        for config,score in self.visited_config_scores.items():
+            scores_by_n_causal[len(config)][config] = score
+        return scores_by_n_causal
 
 
 class AllConfigurations(Configurations):
@@ -46,19 +63,20 @@ class AllConfigurations(Configurations):
         initialize vars, including calculating score of the first config
         """
         super().__init__(**kwarg)
+        self.n_causal = 1
         self.config = np.arange(
             1, self.n_causal + 1
         )  # list of indices of selected variants
         self.current_score = self.score_config(self.config)
         self.best_config = deepcopy(self.config)
         self.best_score = self.current_score
+        self.visited_config_scores[tuple(self.config)] = self.current_score
 
     def next(self):
         """
         moves from config (..., p-1, n-k-1, n-k-2, ... n-2, n-1, n) to (..., p, n-k-1, n-k-2, ... n-2, n-1, n) till p <= n-k
         where n = self.n_causal, k = self.m
         """
-        super().next()
         i = (
             self.n_causal
         )  # 1-based index at which config will change, i.e index of p-1 -> p
@@ -66,12 +84,17 @@ class AllConfigurations(Configurations):
             i -= 1
         if i == 0:
             # no next config
-            self.config = None
+            if self.n_causal < self.max_causal:
+                self.n_causal += 1
+                self.config = np.arange(1, self.n_causal + 1)
+            else:
+                self.config = None
         else:
             self.config[i - 1 :] = (
                 self.config[i - 1] + 1 + np.arange(self.n_causal - i + 1)
             )
             self.current_score = self.score_config(self.config)
+            self.visited_config_scores[tuple(self.config)] = self.current_score
             if self.current_score > self.best_score:
                 self.best_config = deepcopy(self.config)
                 self.best_score = self.current_score
