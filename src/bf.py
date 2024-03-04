@@ -29,7 +29,7 @@ def calculate_BFs(
             n_causal=n_causal,
             m=data.m,
             score_config=lambda t: config_BF(
-                t, data, n, pve_for_prior, prior_values, e, n_causal, approx_bf, u
+                t, data, n, pve_for_prior, prior_values, e, approx_bf, u
             ),
         )
         tic = time.time()
@@ -47,7 +47,11 @@ def calculate_BFs(
     return config_BFs, best_configs
 
 
-def config_BF(t, data, n, pve_for_prior, prior_values, e, n_causal, approx_bf, u):
+def config_BF(t, data, n, pve_for_prior, prior_values, e, approx_bf, u):
+    """
+    t - tuple containing 1-based indices causal variants in the config to be scored
+    """
+    n_causal = len(t)
     if pve_for_prior:
         if data.pve is not None:
             sumOfVarianceSelected = data.pve[t - 1].sum()
