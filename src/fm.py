@@ -108,7 +108,7 @@ if __name__ == "__main__":
     ) = parse_args()
 
     # set scores = log(BF)
-    config_scores, best_configs = calculate_BFs(
+    config_scores, max_BF = calculate_BFs(
         data,
         n,
         pve_for_prior,
@@ -124,7 +124,6 @@ if __name__ == "__main__":
     n_causal2log_prior = calculate_priors(data.m, max_causal)
 
     # set scores = log (BF x prior/max_BF)
-    max_BF = max([config_scores[k][tuple(best_configs[k])] for k in config_scores])
     config_scores, total_score = calculate_scores(
         config_scores, n_causal2log_prior, max_BF
     )

@@ -24,27 +24,17 @@ def calculate_BFs(
     )
     config_BFs = dict()  # map n_causal to all visited config scores
     best_configs = dict()  # map n_causal to all visited config scores
-    for n_causal in range(1, max_causal + 1):
-        config_iter = ConfigurationsFactory(configs_method)(
-            n_causal=n_causal,
-            m=data.m,
-            score_config=lambda t: config_BF(
-                t, data, n, pve_for_prior, prior_values, e, approx_bf, u
-            ),
-        )
-        tic = time.time()
-        config_iter.search(
-            # lambda iter: print("config:", iter.config, "score:", iter.current_score)
-        )
-        print(
-            f"Expored models with {n_causal} causal variant in {time.time() - tic} seconds"
-        )
-        print("n_causal", n_causal)
-        print("best config", config_iter.best_config)
-        print("best score", config_iter.best_score)
-        config_BFs[n_causal] = config_iter.visited_configs
-        best_configs[n_causal] = config_iter.best_config
-    return config_BFs, best_configs
+    config_iter = ConfigurationsFactory(configs_method)(
+        max_causal=max_causal,
+        m=data.m,
+        score_config=lambda t: config_BF(
+            t, data, n, pve_for_prior, prior_values, e, approx_bf, u
+        ),
+    )
+    config_iter.search(
+        # lambda iter: print("config:", iter.config, "score:", iter.current_score)
+    )
+    return config_iter.get_scores_by_n_causal(), config_iter.best_score
 
 
 def config_BF(t, data, n, pve_for_prior, prior_values, e, approx_bf, u):
