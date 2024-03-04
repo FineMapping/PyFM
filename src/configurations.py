@@ -6,7 +6,7 @@ class Configurations:
     def __init__(self, **kwarg):
         self.n_causal = kwarg["n_causal"]
         self.m = kwarg["m"]
-        self.visited_configs = dict()
+        self.visited_configs = dict() # stores scores of configs already visited
         self.score_config = kwarg[
             "score_config"
         ]  # method to calculate score for a config
