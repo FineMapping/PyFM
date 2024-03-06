@@ -49,6 +49,11 @@ def parse_args():
         help=f"choose one causal configurations exploration method from {CONFIGS_IMPL_MAP.keys()}",
         default="AllConfigurations",
     )
+    parser.add_argument(
+        "-p",
+        "--rho",
+        default=1,
+    )
     params = parser.parse_args()
     # TODO: Move the code below into a function that can be called if this project is imported as a python library
     n = int(params.sample_number)
