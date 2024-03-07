@@ -1,5 +1,7 @@
 # PyFM
 
+**PyFM** uses Bayes Factor-based modeling of different configurations of given variants for fine mapping. The framework is essentialy based on CaviarBF [[1]](#1).
+
 We copied the example data from CaviarBF into the `example` subdirectory.
 
 Example run from command-line:
@@ -12,6 +14,7 @@ python src/fm.py \
 ```
 
 #### Arguments:
+For furtherr explanation of the arguments, check CaviarBF arguments since they are very similar.
 | Argument | Type    | Description                                                    |
 |----------|---------|----------------------------------------------------------------|
 | `-z`     | FILE    | zfile                                                          |
@@ -47,3 +50,5 @@ Run CaviarBF on the example files
 ```
 
 
+## References
+<a id="1">[1]</a> Chen W, Larrabee BR, Ovsyannikova IG, Kennedy RB, Haralambieva IH, Poland GA, Schaid DJ. Fine Mapping Causal Variants with an Approximate Bayesian Method Using Marginal Test Statistics. Genetics. 2015 Jul;200(3):719-36. doi: 10.1534/genetics.115.176107. Epub 2015 May 6. PMID: 25948564; PMCID: PMC4512539.
