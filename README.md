@@ -1,6 +1,6 @@
 # PyFM
 
-**PyFM** uses Bayes Factor-based modeling of different configurations of given variants for fine mapping. The framework is essentialy based on CaviarBF [[1]](#1).
+**PyFM** uses Bayes Factor-based modeling of different configurations of given variants for fine mapping. The framework is essentialy based on CaviarBF [[1]](#1). But like FINEMAP [[2]](#2) our method further uses Shotgun Stochastic Search to explore the configurations-space more intelligently.
 
 We copied the example data from CaviarBF into the `example` subdirectory.
 
@@ -51,4 +51,5 @@ Run CaviarBF on the example files
 
 
 ## References
-<a id="1">[1]</a> Chen W, Larrabee BR, Ovsyannikova IG, Kennedy RB, Haralambieva IH, Poland GA, Schaid DJ. Fine Mapping Causal Variants with an Approximate Bayesian Method Using Marginal Test Statistics. Genetics. 2015 Jul;200(3):719-36. doi: 10.1534/genetics.115.176107. Epub 2015 May 6. PMID: 25948564; PMCID: PMC4512539.
+* <a id="1">[1]</a> Chen W, Larrabee BR, Ovsyannikova IG, Kennedy RB, Haralambieva IH, Poland GA, Schaid DJ. Fine Mapping Causal Variants with an Approximate Bayesian Method Using Marginal Test Statistics. Genetics. 2015 Jul;200(3):719-36. doi: 10.1534/genetics.115.176107. Epub 2015 May 6. PMID: 25948564; PMCID: PMC4512539.
+* <a id="2">[2]</a> Christian Benner, Chris C.A. Spencer, Aki S. Havulinna, Veikko Salomaa, Samuli Ripatti, Matti Pirinen, FINEMAP: efficient variable selection using summary data from genome-wide association studies, Bioinformatics, Volume 32, Issue 10, May 2016, Pages 1493–1501, https://doi.org/10.1093/bioinformatics/btw018
