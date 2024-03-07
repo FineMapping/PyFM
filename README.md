@@ -65,9 +65,6 @@ Run CaviarBF on the example files. Note: CaviarBF has two modules,
 model of SNP combinations based on exhaustive/greedy search. Again, please refer
 to [CaviarBF Manual](CaviarBF_Manual.pdf).
 
-### CaviarBF: caviarbf module
-*Don't know why sometimes it returns killed: 9, but just run it again.*
-
 We had prepared the example code for the following file structures
 ```
 caviarbf/
@@ -84,6 +81,9 @@ PyFM/
     caviarbf_results/
     ...
 ```
+
+### CaviarBF: caviarbf module
+*Don't know why sometimes it returns killed: 9, but just run it again.*
 
 Similar to PyFM, but `-o` is a PATH to the FILE, instead of PATH to DIR
 
