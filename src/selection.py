@@ -3,22 +3,26 @@ import numpy as np
 import sys
 
 
-def get_rhos(ranking, config_scores, max_causal):
+def get_rhos(rho, ranking, config_scores, max_causal, total_score):
     # TODO: use greedy search as described in Caviar and Caviarbf
     # Currently using naive impl but with up to top 5 variants (or max_causal if that's smaller)
     rho_scores = []
     subsets_score = 0
     subsets = []
-    for k in range(1, min(max_causal + 1, 6)):
+    for k in range(1, max(max_causal + 1, 10)):
         # k_combinations = list(combinations(rho_set,k))
         # subsets.extend(k_combinations)
         new_subsets = [[ranking[k - 1]]]
         if len(subsets) > 0:
-            new_subsets.extend([subset + [ranking[k - 1]] for subset in subsets])
+            new_subsets.extend([subset + [ranking[k - 1]] for subset in subsets if len(subset)<max_causal])
         for new_subset in new_subsets:
-            subsets_score += 10 ** config_scores[len(new_subset)][tuple(new_subset)]
-        rho_scores.append(subsets_score)
+            config = tuple(sorted(new_subset))
+            if config in config_scores[len(new_subset)]:
+                subsets_score += 10 ** config_scores[len(new_subset)][config]
+        rho_scores.append(round(subsets_score/total_score,7))
         subsets.extend(new_subsets)
+        if (rho_scores[-1] >= rho):
+            break
     return rho_scores
 
 
