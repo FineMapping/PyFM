@@ -62,8 +62,8 @@ def parse_args():
     # TODO: make sure zfile and rfile exist
     data = Data(params.zfile, params.rfile, n, approx_bf)
 
-    # TODO: make sure outdir exists otherwise make folders and subfolders as needed
     outdir = params.outdir
+    os.makedirs(outdir, exist_ok=True)
     prior_type = bool(params.prior_type)
     pve_for_prior = int(params.prior_type) > 0 # switch arg for prior_type
     prior_values = np.array([float(x) for x in params.prior_values.split()])

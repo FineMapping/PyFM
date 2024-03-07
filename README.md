@@ -13,8 +13,11 @@ python src/fm.py \
   -n 471 -c 2 -t 0 -e 0.1 -a 1.6
 ```
 
+
 #### Arguments:
-For furtherr explanation of the arguments, check CaviarBF arguments since they are very similar.
+For further explanation of the arguments, check CaviarBF arguments since they are very similar:
+ [CaviarBF Manual](CaviarBF_Manual.pdf)
+
 | Argument | Type    | Description                                                    |
 |----------|---------|----------------------------------------------------------------|
 | `-z`     | FILE    | zfile                                                          |
@@ -25,7 +28,7 @@ For furtherr explanation of the arguments, check CaviarBF arguments since they a
 | `-t`     | int     | (default: 0) prior type                                        |
 | `-e`     | float   | (default: 0) epsilon, noise factor added to correlation matrix |
 | `-a`     | [float] | (default: 0.1 0.2 0.4 0.8 1.6) priors to run on                |
-| `-p`     | float   | (default: 1) rho cutoff to be used                             |
+| `-p`     | float   | (default: 1; i.e. reports all) rho cutoff to be used           |
 
 
 ## Compare results with CaviarBF
@@ -35,18 +38,39 @@ Download CaviarBF from by
 git clone https://bitbucket.org/Wenan/caviarbf.git
 ```
 
-Install by running the Makefile using
+Install by running the Makefile using 
 ```
 make
 ```
 
-Run CaviarBF on the example files
+Run CaviarBF on the example files. Note: CaviarBF has two modules, 
+`caviarbf` and `model_search`
+
+`caviarbf` builds the Bayes factors for each SNP, and `model_search` find the best
+model of SNP combinations based on exhaustive/greedy search. Again, please refer
+to [CaviarBF Manual](CaviarBF_Manual.pdf).
+
+### CaviarBF: caviarbf module
+
+Similar to PyFM, but `-o` is a PATH to the FILE, instead of PATH to DIR
+
 ```shell
 ../caviarbf/caviarbf \
   -z example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.z \
   -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.LD \
-  -o caviarbf_results/test \
+  -o caviarbf_results/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.bf \
   -n 471 -c 2 -t 0 -e 0.1 -a 1.6
+```
+
+### CaviarBF: build_model module
+
+`-e` for exhaustive search, and `-s` for greedy stepwise search
+
+```shell
+../caviarbf/model_search \
+  -i caviarbf_results/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.bf \
+  -o caviarbf_results/test_stepwise \
+  -s -m 237 -p 0 > caviarbf_results/log.txt
 ```
 
 
