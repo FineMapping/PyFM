@@ -19,9 +19,9 @@ def get_rhos(rho, ranking, config_scores, max_causal, total_score):
             config = tuple(sorted(new_subset))
             if config in config_scores[len(new_subset)]:
                 subsets_score += 10 ** config_scores[len(new_subset)][config]
-        rho_scores.append(round(subsets_score/total_score,7))
+        rho_scores.append(subsets_score/total_score)
         subsets.extend(new_subsets)
-        if (rho_scores[-1] >= rho):
+        if (round(rho_scores[-1],7) >= rho):
             break
     return rho_scores
 
@@ -64,6 +64,6 @@ def print_rhos(rhos, ranking, data, filename=None):
     print("step\tid\trsid\trho", file=f)
     for rank in range(len(rhos)):
         i = ranking[rank]
-        print(f"{rank+1}\t{i}\t{data.rsid[i-1]}\t{rhos[rank]}", file=f)
+        print(f"{rank+1}\t{i}\t{data.rsid[i-1]}\t{'{:6e}'.format(rhos[rank])}", file=f)
     if f is not sys.stdout:
         f.close()
