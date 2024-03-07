@@ -32,7 +32,7 @@ def parse_args():
     )
     parser.add_argument("-n", "--sample-number", default=0)
     parser.add_argument("-t", "--prior-type", default=0)
-    parser.add_argument("-a", "--prior-values", default="0.1 0.2 0.4 0.8 1.6")
+    parser.add_argument("-a", "--prior-values", default="0.1,0.2,0.4")
     parser.add_argument(
         "-e",
         "--epsilon",
@@ -66,7 +66,7 @@ def parse_args():
     outdir = params.outdir
     prior_type = bool(params.prior_type)
     pve_for_prior = int(params.prior_type) > 0 # switch arg for prior_type
-    prior_values = np.array([float(x) for x in params.prior_values.split()])
+    prior_values = np.array([float(x) for x in params.prior_values.split(',')])
     e = float(params.epsilon)
 
     if not pve_for_prior:
