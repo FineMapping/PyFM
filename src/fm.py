@@ -141,5 +141,5 @@ if __name__ == "__main__":
     print_marginal_pips(marginal_pip, ranking, data, os.path.join(outdir, "pips.tsv"))
 
     # rho-confidence set
-    rho_scores = get_rhos(ranking, config_scores, max_causal)
+    rho_scores = get_rhos(rho, ranking, config_scores, max_causal, total_score)
     print_rhos(rho_scores, ranking, data, os.path.join(outdir, "rhos.tsv"))
