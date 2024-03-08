@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 # from utils import
 from data import Data
 from bf import calculate_BFs, calculate_scores
+import configurations
 from configurations import CONFIGS_IMPL_MAP
 from priors import calculate_priors
 from selection import get_rhos, get_marginal_pip, print_marginal_pips, print_rhos

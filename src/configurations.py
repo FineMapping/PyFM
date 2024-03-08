@@ -2,6 +2,7 @@ import numpy as np
 from copy import deepcopy
 import time
 from collections import defaultdict
+from tqdm import tqdm
 
 class Configurations:
     def __init__(self, **kwarg):
@@ -93,6 +94,7 @@ class AllConfigurations(Configurations):
             self.config[i - 1 :] = (
                 self.config[i - 1] + 1 + np.arange(self.n_causal - i + 1)
             )
+
             self.current_score = self.score_config(self.config)
             self.visited_config_scores[tuple(self.config)] = self.current_score
             if self.current_score > self.best_score:
@@ -100,7 +102,6 @@ class AllConfigurations(Configurations):
                 self.best_score = self.current_score
 
 
-# TODO: implement next for this class
 class SSSConfigurations(Configurations):
     """
     Shotgun Stochastic Search, such as used by FINEMAP
@@ -108,7 +109,74 @@ class SSSConfigurations(Configurations):
 
     def __init__(self, **kwarg):
         super().__init__(**kwarg)
+        current_causal = (self.max_causal//2) if self.max_causal > 1 else 1
+        self.current_model = np.arange(1,current_causal+1)
+        self.not_included = set(range(current_causal+1, self.m+1))
+        
+        self.best_model = self.current_model.copy()
+        self.best_score = self.score_config(self.current_model)
+        
+        # For Sampling
+        self.alpha1 = 1
+        self.alpha2 = 1
+    
+    def get_negative_neighborhood(self):
+        if not len(self.current_model) - 1:
+            return []
+        copy = self.current_model.copy()[:-1]
+        yield copy
+        for i in range(len(self.current_model)-1):
+            copy[i] = self.current_model[-1]
+            yield copy
+            copy[i] = self.current_model[i]
 
+    def get_same_neighborhood(self):
+        copy = self.current_model.copy()
+        if not len(self.current_model):
+            return []
+        else:
+            for snp in self.not_included:
+                for i in range(len(self.current_model)):
+                    copy[i] = snp
+                    yield copy
+                    copy[i] = self.current_model[i]
+                    
+    def get_positive_neighborhood(self):
+        if len(self.current_model) == self.max_causal:
+            return []
+        copy = np.concatenate([self.current_model, np.array([-1])])
+        for snp in self.not_included:
+            copy[-1] = snp
+            yield copy
+    
+    def sample_from_distribution(self, generator):
+        neighbor_scores = np.array([self.score_config(x) for x in generator()])
+        if not len(neighbor_scores):
+            return None, None
+        best_model_index = np.argmax(neighbor_scores)
+        
+        # Weighted by score
+        weights = np.power(neighbor_scores, self.alpha1)
+        
+        random_model_index = np.random.choice(np.arange(len(neighbor_scores)), p=weights/weights.sum())        
+        models = {i: x.copy() for i, x in enumerate(generator()) if i in (best_model_index,random_model_index)}
+        if neighbor_scores.max() > self.best_score:
+            self.best_score = neighbor_scores.max()
+            self.best_model = models[best_model_index].copy()
+        return models[random_model_index], neighbor_scores[random_model_index]
+        
+    def search(self, num_steps=5):
+        for i in tqdm(range(1,num_steps+1)):
+            neighbors = list(map(self.sample_from_distribution, 
+                (self.get_negative_neighborhood, self.get_same_neighborhood, self.get_positive_neighborhood)
+            ))
+            weights = np.power(np.array([neighbor[1] for neighbor in neighbors if neighbor[0] is not None]), self.alpha2)
+            neighbors = [neighbor[0] for neighbor in neighbors if neighbor[0] is not None]
+            next_model_index = np.random.choice(np.arange(len(neighbors)), p=weights/weights.sum())
+            
+            self.current_model = neighbors[next_model_index]
+            self.not_included = set(np.arange(1, self.m+1)) - set(self.current_model)
+        return self.best_model, self.best_score
 
 #############################################################
 #        Configurations Factory
