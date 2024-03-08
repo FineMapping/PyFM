@@ -113,7 +113,7 @@ class SSSConfigurations(Configurations):
         self.current_model = np.arange(1,current_causal+1)
         self.not_included = set(range(current_causal+1, self.m+1))
         
-        self.best_model = self.current_model.copy()
+        self.best_config = self.current_model.copy()
         self.best_score = self.score_config(self.current_model)
         
         # For Sampling
@@ -153,19 +153,20 @@ class SSSConfigurations(Configurations):
         neighbor_scores = np.array([self.score_config(x) for x in generator()])
         if not len(neighbor_scores):
             return None, None
-        best_model_index = np.argmax(neighbor_scores)
+        best_config_index = np.argmax(neighbor_scores)
         
         # Weighted by score
         weights = np.power(neighbor_scores, self.alpha1)
         
         random_model_index = np.random.choice(np.arange(len(neighbor_scores)), p=weights/weights.sum())        
-        models = {i: x.copy() for i, x in enumerate(generator()) if i in (best_model_index,random_model_index)}
+        models = {i: x.copy() for i, x in enumerate(generator()) if i in (best_config_index,random_model_index)}
         if neighbor_scores.max() > self.best_score:
             self.best_score = neighbor_scores.max()
-            self.best_model = models[best_model_index].copy()
+            self.best_config = models[best_config_index].copy()
         return models[random_model_index], neighbor_scores[random_model_index]
         
-    def search(self, num_steps=5):
+    def search(self, num_steps=100):
+        tic = time.time()
         for i in tqdm(range(1,num_steps+1)):
             neighbors = list(map(self.sample_from_distribution, 
                 (self.get_negative_neighborhood, self.get_same_neighborhood, self.get_positive_neighborhood)
@@ -176,7 +177,13 @@ class SSSConfigurations(Configurations):
             
             self.current_model = neighbors[next_model_index]
             self.not_included = set(np.arange(1, self.m+1)) - set(self.current_model)
-        return self.best_model, self.best_score
+
+        print(
+            f"Expored models with {self.max_causal} causal variant in {time.time() - tic} seconds"
+        )
+        print("n_causal", len(self.best_config))
+        print("best config", self.best_config)
+        print("best score", self.best_score)
 
 #############################################################
 #        Configurations Factory

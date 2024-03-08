@@ -15,8 +15,8 @@ class Data:
         self.pve = zfile.pve if "pve" in zfile.columns else None
         ldfile = readLDfile(ldfilename, self.rsid)
         self.ld = ldfile
-        print(ldfile)
-        print(ldfile.shape)
+        # print(ldfile)
+        # print(ldfile.shape)
         self.m = len(self.z)
 
         if not approx_bf:

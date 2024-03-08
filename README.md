@@ -27,6 +27,16 @@ python src/fm.py \
   -n 5363 -c 2 -t 0 -e 0.1 -a 1.6
 ```
 
+**Example 3 (Shotgun Stochastic Search)**
+```shell
+python src/fm.py \
+  -z example/finemap_examples/finemap_data.z \
+  -r example/finemap_examples/finemap_data.ld \
+  -o pyfm_results \
+  --configs-method SSSConfigurations \
+  -n 5363 -c 2 -t 0 -e 0.1 -a 1.6
+```
+
 
 #### Arguments:
 For further explanation of the arguments, check CaviarBF arguments since they are very similar:
