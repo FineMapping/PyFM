@@ -29,6 +29,17 @@ python src/fm.py \
   -n 471 -c 2 -t 0 -e 0.1 -a 1.6
 ```
 
+**Example 1 with up to 5 Causal Variants**
+```shell
+python src/fm.py \
+  -z example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.z \
+  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.LD \
+  -o pyfm_results \
+  --configs-method SSSConfigurations \
+  --SSS-iterations 100 \
+  -n 471 -c 5 -t 0 -e 0.1 -a 1.6
+```
+
 **Example 2**
 ```shell
 python src/fm.py \

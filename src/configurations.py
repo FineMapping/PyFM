@@ -130,6 +130,8 @@ class SSSConfigurations(Configurations):
         self.alpha1 = self.optimization_params['SSS_alpha1']
         self.alpha2 = self.optimization_params['SSS_alpha2']
 
+        np.random.seed(self.optimization_params['Random_Seed'])
+
     def get_negative_neighborhood(self):
         if not len(self.current_model) - 1:
             return []
@@ -192,7 +194,7 @@ class SSSConfigurations(Configurations):
             f"Expored models up to {self.max_causal} causal variant in {time.time() - tic} seconds"
         )
         print("n_causal", len(self.best_config))
-        print("best config", self.best_config)
+        print("best config", np.array(sorted(self.best_config)))
         print("best score", self.best_score)
 
 #############################################################

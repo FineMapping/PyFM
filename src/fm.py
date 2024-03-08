@@ -63,7 +63,7 @@ def parse_args():
 
         If this parameter is low, the chosen model in each group will
         be more random.""",
-        default=2,
+        default=1.5,
     )
     parser.add_argument(
         "--SSS-alpha2",
@@ -73,7 +73,12 @@ def parse_args():
 
         If this parameter is low, the group chosen will
         be more random.""",
-        default=2,
+        default=1.5,
+    )
+    parser.add_argument(
+        "--Random-Seed",
+        help=f"""Random Seed For Shotgun Stochastic Search. Set to 'None' For No Random Seeding""",
+        default='None',
     )
     parser.add_argument(
         "-p",
@@ -106,7 +111,8 @@ def parse_args():
     optimization_params = {
         'SSS_iterations': int(params.SSS_iterations), 
         'SSS_alpha1': float(params.SSS_alpha1), 
-        'SSS_alpha2': float(params.SSS_alpha2)
+        'SSS_alpha2': float(params.SSS_alpha2),
+        'Random_Seed': eval(params.Random_Seed)
     }
 
     rho = float(params.rho)
