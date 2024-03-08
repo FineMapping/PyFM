@@ -14,6 +14,7 @@ def calculate_BFs(
     max_causal,
     configs_method,
     approx_bf,
+    optimization_params,
     filename,
 ):
 
@@ -30,6 +31,7 @@ def calculate_BFs(
         score_config=lambda t: config_BF(
             t, data, n, pve_for_prior, prior_values, e, approx_bf, u
         ),
+        optimization_params=optimization_params,
     )
     config_iter.search(
         # lambda iter: print("config:", iter.config, "score:", iter.current_score)

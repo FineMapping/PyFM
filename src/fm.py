@@ -51,6 +51,31 @@ def parse_args():
         default="AllConfigurations",
     )
     parser.add_argument(
+        "--SSS-iterations",
+        help=f"Number of iterations for Shotgun Stochastic Search to run",
+        default=100,
+    )
+    parser.add_argument(
+        "--SSS-alpha1",
+        help=f"""Temperature Parameter for SSS sampling stage 1. 
+        When this parameter is high, the chosen model in each group 
+        will be the highest scoring model (greedy search). 
+
+        If this parameter is low, the chosen model in each group will
+        be more random.""",
+        default=2,
+    )
+    parser.add_argument(
+        "--SSS-alpha2",
+        help=f"""Temperature Parameter for SSS sampling stage 2. 
+        When this parameter is high, the group chosen
+        will be the highest scoring model (greedy search). 
+
+        If this parameter is low, the group chosen will
+        be more random.""",
+        default=2,
+    )
+    parser.add_argument(
         "-p",
         "--rho",
         default=1,
@@ -78,6 +103,11 @@ def parse_args():
     max_causal = int(params.max_causal)
 
     configs_method = params.configs_method
+    optimization_params = {
+        'SSS_iterations': int(params.SSS_iterations), 
+        'SSS_alpha1': float(params.SSS_alpha1), 
+        'SSS_alpha2': float(params.SSS_alpha2)
+    }
 
     rho = float(params.rho)
     return (
@@ -90,7 +120,8 @@ def parse_args():
         configs_method,
         approx_bf,
         rho,
-        outdir,
+        optimization_params,
+        outdir
     )
 
 
@@ -105,7 +136,8 @@ if __name__ == "__main__":
         configs_method,
         approx_bf,
         rho,
-        outdir,
+        optimization_params,
+        outdir
     ) = parse_args()
 
     # set scores = log(BF)
@@ -118,6 +150,7 @@ if __name__ == "__main__":
         max_causal,
         configs_method,
         approx_bf,
+        optimization_params,
         os.path.join(outdir, "BF.tsv"),
     )
 
@@ -128,6 +161,10 @@ if __name__ == "__main__":
     config_scores, total_score = calculate_scores(
         config_scores, n_causal2log_prior, max_BF
     )
+
+    if configs_method == 'SSSConfigurations':
+        # Returning early for SSS since we don't have all the scores for each model
+        exit(0)
 
     # set null_model_score
     null_model_score = 10 ** (

@@ -1,3 +1,5 @@
-# Expected number of causal SNPs:  0.0
+# Expected number of causal SNPs:  1.9999999999999982
 # Ranked Marginal PIPs:
 rank	id	rsid	pip
+1	153	rs9438393_G	0.9611250691776141
+2	156	rs823080_A	0.9247768227523817

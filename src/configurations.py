@@ -12,6 +12,7 @@ class Configurations:
         self.score_config = kwarg[
             "score_config"
         ]  # method to calculate score for a config
+        self.optimization_params = kwarg["optimization_params"]
         # child class should initialize:
         self.config = None
         self.current_score = None
@@ -36,16 +37,24 @@ class Configurations:
         while not self.ended():
             if self.n_causal > prev_n_causal:
                 print(
-                    f"Expored models with {self.n_causal} causal variant in {time.time() - tic} seconds"
+                    f"Expored models with {prev_n_causal} causal variant in {time.time() - tic} seconds"
                 )
-                print("n_causal", self.n_causal)
+                print("n_causal", prev_n_causal)
                 print("best config", self.best_config)
-                print("best score", self.best_score)
+                print("best score", self.best_score, end='\n\n')
                 tic = time.time()
                 prev_n_causal = self.n_causal
             if do is not None:
                 do(self)
             self.next()
+
+        print(
+            f"Expored models with {self.n_causal} causal variant in {time.time() - tic} seconds"
+        )
+        print("n_causal", self.n_causal)
+        print("best config", self.best_config)
+        print("best score", self.best_score, end='\n\n')
+
 
     def get_scores_by_n_causal(self):
         scores_by_n_causal = defaultdict(dict)
@@ -116,10 +125,11 @@ class SSSConfigurations(Configurations):
         self.best_config = self.current_model.copy()
         self.best_score = self.score_config(self.current_model)
         
-        # For Sampling
-        self.alpha1 = 1
-        self.alpha2 = 1
-    
+        # Optimization Parameters
+        self.num_iterations = self.optimization_params['SSS_iterations']
+        self.alpha1 = self.optimization_params['SSS_alpha1']
+        self.alpha2 = self.optimization_params['SSS_alpha2']
+
     def get_negative_neighborhood(self):
         if not len(self.current_model) - 1:
             return []
@@ -165,9 +175,9 @@ class SSSConfigurations(Configurations):
             self.best_config = models[best_config_index].copy()
         return models[random_model_index], neighbor_scores[random_model_index]
         
-    def search(self, num_steps=100):
+    def search(self):
         tic = time.time()
-        for i in tqdm(range(1,num_steps+1)):
+        for _ in tqdm(range(self.num_iterations)):
             neighbors = list(map(self.sample_from_distribution, 
                 (self.get_negative_neighborhood, self.get_same_neighborhood, self.get_positive_neighborhood)
             ))
@@ -179,7 +189,7 @@ class SSSConfigurations(Configurations):
             self.not_included = set(np.arange(1, self.m+1)) - set(self.current_model)
 
         print(
-            f"Expored models with {self.max_causal} causal variant in {time.time() - tic} seconds"
+            f"Expored models up to {self.max_causal} causal variant in {time.time() - tic} seconds"
         )
         print("n_causal", len(self.best_config))
         print("best config", self.best_config)
