@@ -3,7 +3,7 @@ from copy import deepcopy
 import time
 from collections import defaultdict
 from tqdm import tqdm
-
+import os
 class Configurations:
     def __init__(self, **kwarg):
         self.max_causal = kwarg["max_causal"]
@@ -13,6 +13,7 @@ class Configurations:
             "score_config"
         ]  # method to calculate score for a config
         self.optimization_params = kwarg["optimization_params"]
+        self.outdir = kwarg["outdir"]
         # child class should initialize:
         self.config = None
         self.current_score = None
@@ -35,7 +36,7 @@ class Configurations:
         tic = time.time()
         prev_n_causal = self.n_causal
         while not self.ended():
-            if self.n_causal > prev_n_causal:
+            if self.n_causal > prev_n_causal: # if n_causal increments, log some stats
                 print(
                     f"Expored models with {prev_n_causal} causal variant in {time.time() - tic} seconds"
                 )
