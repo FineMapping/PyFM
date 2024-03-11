@@ -2,6 +2,8 @@ import numpy as np
 from scipy.linalg import cholesky, cho_solve
 from numpy import log, abs, exp
 from configurations import ConfigurationsFactory
+from functools import lru_cache
+from collections import OrderedDict
 import time
 
 
@@ -18,7 +20,16 @@ def calculate_BFs(
     outdir,
 ):
 
-    count = 0
+    cache = OrderedDict()
+    def score_config(t):
+        if t.hash() not in cache:
+            cache[t.hash()] = config_BF(t, data, n, pve_for_prior, prior_values, e, approx_bf, u)
+            
+            if len(cache) > optimization_params['max_cache_size']:
+                first_insertion = next(iter(cache))
+                del cache[first_insertion if first_insertion != t.hash() else next(next(iter(cache)))]
+        return cache[t.hash()]
+
     # TODO: consider putting u in data
     u = (data.pve.values if data.pve is not None else np.ones(data.m)) * (
         n if approx_bf else (n - 1)
@@ -28,9 +39,7 @@ def calculate_BFs(
     config_iter = ConfigurationsFactory(configs_method)(
         max_causal=max_causal,
         m=data.m,
-        score_config=lambda t: config_BF(
-            t, data, n, pve_for_prior, prior_values, e, approx_bf, u
-        ),
+        score_config=(score_config if configs_method == 'SSSConfigurations' else lambda t: config_BF(t, data, n, pve_for_prior, prior_values, e, approx_bf, u)),
         optimization_params=optimization_params,
         outdir=outdir,
     )

@@ -112,6 +112,31 @@ class AllConfigurations(Configurations):
                 self.best_score = self.current_score
 
 
+class HashableArray(np.ndarray):
+    # https://stackoverflow.com/questions/26821169/python-how-to-wrap-the-np-ndarray-class
+    def __new__(cls, *args, **kwargs):
+        this = np.array(*args, **kwargs)
+        this = np.asarray(this).view(cls)
+        return this
+
+    def __array_finalize__(self, obj):
+        if obj.ndim == 4:
+            self.myShape = (self.shape[0]*self.shape[1], self.shape[2]*self.shape[3])
+        else:
+            self.myShape = self.shape
+
+    def hash(self):
+        # https://stackoverflow.com/questions/16589791/most-efficient-property-to-hash-for-numpy-array
+        hash_value = sum(map(lambda x: 1 << x,self.data))
+        return hash_value
+
+    def __hash__(self):
+        return self.hash()
+
+    def __eq__(self, x):
+        return self.hash() == x.hash()
+
+
 class SSSConfigurations(Configurations):
     """
     Shotgun Stochastic Search, such as used by FINEMAP
@@ -120,12 +145,11 @@ class SSSConfigurations(Configurations):
     def __init__(self, **kwarg):
         super().__init__(**kwarg)
         current_causal = (self.max_causal//2) if self.max_causal > 1 else 1
-        self.current_model = np.arange(1,current_causal+1)
+        self.current_model = HashableArray(np.arange(1,current_causal+1))
         self.not_included = set(range(current_causal+1, self.m+1))
         
         self.best_config = self.current_model.copy()
         self.best_score = self.score_config(self.current_model)
-        
         # Optimization Parameters
         self.num_iterations = self.optimization_params['SSS_iterations']
         self.alpha1 = self.optimization_params['SSS_alpha1']
@@ -157,7 +181,7 @@ class SSSConfigurations(Configurations):
     def get_positive_neighborhood(self):
         if len(self.current_model) == self.max_causal:
             return []
-        copy = np.concatenate([self.current_model, np.array([-1])])
+        copy = HashableArray(np.concatenate([self.current_model, np.array([-1])]))
         for snp in self.not_included:
             copy[-1] = snp
             yield copy
