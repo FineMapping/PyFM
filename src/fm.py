@@ -157,7 +157,7 @@ if __name__ == "__main__":
         configs_method,
         approx_bf,
         optimization_params,
-        os.path.join(outdir, "BF.tsv"),
+        outdir=outdir,
     )
 
     # calculate priors

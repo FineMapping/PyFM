@@ -15,7 +15,7 @@ def calculate_BFs(
     configs_method,
     approx_bf,
     optimization_params,
-    filename,
+    outdir,
 ):
 
     count = 0
@@ -32,6 +32,7 @@ def calculate_BFs(
             t, data, n, pve_for_prior, prior_values, e, approx_bf, u
         ),
         optimization_params=optimization_params,
+        outdir=outdir,
     )
     config_iter.search(
         # lambda iter: print("config:", iter.config, "score:", iter.current_score)
