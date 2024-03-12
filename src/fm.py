@@ -205,4 +205,7 @@ if __name__ == "__main__":
     # rho-confidence set
     rho_scores = get_rhos(rho, ranking, config_scores, max_causal, total_score)
     print_rhos(rho_scores, ranking, data, os.path.join(outdir, "rhos.tsv"))
-    print(f"PyFM ran successfully in {round(time.time() - tic,2)} seconds")
+    total_time = round(time.time() - tic, 3)
+    with open(outdir + '/time.txt', 'w') as fp_write:
+        fp_write.write(str(total_time))
+    print(f"PyFM ran successfully in {round(time.time() - tic,3)} seconds")
