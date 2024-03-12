@@ -86,12 +86,23 @@ def parse_args():
         "--rho",
         default=1,
     )
+    parser.add_argument(
+        "--exclude_null",
+        help="To include the Null Model score into the total-score computation. "
+             "This will affect the denominator of the rho-value computation",
+        default=False,
+        type=bool,
+        action=argparse.BooleanOptionalAction
+    )
     params = parser.parse_args()
     # TODO: Move the code below into a function that can be called if this project is imported as a python library
     n = int(params.sample_number)
     approx_bf = params.approx_bf
 
-    # TODO: make sure zfile and rfile exist
+    if not os.path.exists(params.zfile):
+        raise ValueError('zfile does not exist')
+    if not os.path.exists(params.rfile):
+        raise ValueError('rfile does not exist')
     data = Data(params.zfile, params.rfile, n, approx_bf)
 
     outdir = params.outdir
@@ -117,6 +128,7 @@ def parse_args():
     }
 
     rho = float(params.rho)
+    exclude_null = params.exclude_null
     return (
         data,
         n,
@@ -129,6 +141,7 @@ def parse_args():
         rho,
         optimization_params,
         outdir,
+        exclude_null,
     )
 
 
@@ -145,6 +158,7 @@ if __name__ == "__main__":
         rho,
         optimization_params,
         outdir,
+        exclude_null,
     ) = parse_args()
     tic = time.time()
 
@@ -178,7 +192,9 @@ if __name__ == "__main__":
     null_model_score = 10 ** (
         n_causal2log_prior[0] - max_BF
     )  # BF = 1, log_BF = 0 for null model
-    total_score += null_model_score
+    if not exclude_null:
+        total_score += null_model_score
+    print('null_model_score = ', null_model_score)
     print("totalscore = ", total_score)
 
     # get marginal PIP for each variant

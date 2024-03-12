@@ -55,17 +55,18 @@ For further explanation of the arguments, check CaviarBF arguments since they ar
  [CaviarBF Manual](CaviarBF_Manual.pdf) 
 (if does not open on webpage, please download the PDF file from above and open locally)
 
-| Argument | Type    | Description                                                    |
-|----------|---------|----------------------------------------------------------------|
-| `-z`     | FILE    | zfile                                                          |
-| `-r`     | FILE    | rfile containing pairwise LD correlation matrix                |
-| `-o`     | DIR     | output directory                                               |
-| `-n`     | int     | (default: 0) sample number                                     |
-| `-c`     | int     | (default: 3) maximum number of causal variants considered      |
-| `-t`     | int     | (default: 0) prior type                                        |
-| `-e`     | float   | (default: 0) epsilon, noise factor added to correlation matrix |
-| `-a`     | [float] | (default: 0.1 0.2 0.4 0.8 1.6) priors to run on                |
-| `-p`     | float   | (default: 1; i.e. reports all) rho cutoff to be used           |
+| Argument         | Type    | Description                                                       |
+|------------------|---------|-------------------------------------------------------------------|
+| `-z`             | FILE    | zfile                                                             |
+| `-r`             | FILE    | rfile containing pairwise LD correlation matrix                   |
+| `-o`             | DIR     | output directory                                                  |
+| `-n`             | int     | (default: 0) sample number                                        |
+| `-c`             | int     | (default: 3) maximum number of causal variants considered         |
+| `-t`             | int     | (default: 0) prior type                                           |
+| `-e`             | float   | (default: 0) epsilon, noise factor added to correlation matrix    |
+| `-a`             | [float] | (default: 0.1 0.2 0.4 0.8 1.6) priors to run on                   |
+| `-p`             | float   | (default: 1; i.e. reports all) rho cutoff to be used              |
+| `--exclude_null` | bool    | (optional) if used, null model score is excluded from total score |
 
 
 ## Compare results with CaviarBF
