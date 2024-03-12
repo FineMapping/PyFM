@@ -73,7 +73,7 @@ class Configurations:
                 key=lambda config_score: config_score[1],
                 reverse=True,
             ):
-                f.write(f"{config}\t{round(score,4)}\n")
+                f.write(f"{list(config)}\t{round(score,4)}\n")
 
 
 class AllConfigurations(Configurations):
