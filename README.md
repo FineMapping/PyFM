@@ -13,7 +13,7 @@ well, though the SNP selections are the same (under investigation).*
 ```shell
 python src/fm.py \
   -z example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.z \
-  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.LD \
+  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.ld \
   -o pyfm_results \
   -n 471 -c 2 -t 0 -e 0.1 -a 1.6
 ```
@@ -22,7 +22,7 @@ python src/fm.py \
 ```shell
 python src/fm.py \
   -z example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.z \
-  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.LD \
+  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.ld \
   -o pyfm_results \
   --configs-method SSSConfigurations \
   --SSS-iterations 100 \
@@ -33,7 +33,7 @@ python src/fm.py \
 ```shell
 python src/fm.py \
   -z example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.z \
-  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.LD \
+  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.ld \
   -o pyfm_results \
   --configs-method SSSConfigurations \
   --SSS-iterations 100 \
@@ -114,7 +114,7 @@ Similar to PyFM, but `-o` is a PATH to the FILE, instead of PATH to DIR
 ```shell
 ../caviarbf/caviarbf \
   -z example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.z \
-  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.LD \
+  -r example/eQTL/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.ld \
   -o caviarbf_results/region.LOC284581.chr1.205831207.205865215.dosage.p1e-12.bf \
   -n 471 -c 2 -t 0 -e 0.1 -a 1.6
 ```
@@ -146,6 +146,14 @@ Similar to PyFM, but `-o` is a PATH to the FILE, instead of PATH to DIR
   -i caviarbf_results/finemap_example.bf \
   -o caviarbf_results/test_finemap_stepwise \
   -s -m 55 -p 0 > caviarbf_results/log.txt
+```
+
+Run FINEMAP (in its own executable DIR)
+```shell
+./finemap_v1.4.2_x86_64 \
+  --sss \
+  --in-files example/data \
+  --dataset 1
 ```
 
 
