@@ -37,6 +37,7 @@ def calculate_BFs(
     config_iter.search(
         # lambda iter: print("config:", iter.config, "score:", iter.current_score)
     )
+    config_iter.export_scores()
     return config_iter.get_scores_by_n_causal(), config_iter.best_score
 
 

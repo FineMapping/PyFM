@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import time
 
 # from utils import
 from data import Data
@@ -78,7 +79,7 @@ def parse_args():
     parser.add_argument(
         "--Random-Seed",
         help=f"""Random Seed For Shotgun Stochastic Search. Set to 'None' For No Random Seeding""",
-        default='None',
+        default="None",
     )
     parser.add_argument(
         "-p",
@@ -96,8 +97,8 @@ def parse_args():
     outdir = params.outdir
     os.makedirs(outdir, exist_ok=True)
     prior_type = bool(params.prior_type)
-    pve_for_prior = int(params.prior_type) > 0 # switch arg for prior_type
-    prior_values = np.array([float(x) for x in params.prior_values.split(',')])
+    pve_for_prior = int(params.prior_type) > 0  # switch arg for prior_type
+    prior_values = np.array([float(x) for x in params.prior_values.split(",")])
     e = float(params.epsilon)
 
     if not pve_for_prior:
@@ -109,10 +110,10 @@ def parse_args():
 
     configs_method = params.configs_method
     optimization_params = {
-        'SSS_iterations': int(params.SSS_iterations), 
-        'SSS_alpha1': float(params.SSS_alpha1), 
-        'SSS_alpha2': float(params.SSS_alpha2),
-        'Random_Seed': eval(params.Random_Seed)
+        "SSS_iterations": int(params.SSS_iterations),
+        "SSS_alpha1": float(params.SSS_alpha1),
+        "SSS_alpha2": float(params.SSS_alpha2),
+        "Random_Seed": eval(params.Random_Seed),
     }
 
     rho = float(params.rho)
@@ -127,7 +128,7 @@ def parse_args():
         approx_bf,
         rho,
         optimization_params,
-        outdir
+        outdir,
     )
 
 
@@ -143,8 +144,9 @@ if __name__ == "__main__":
         approx_bf,
         rho,
         optimization_params,
-        outdir
+        outdir,
     ) = parse_args()
+    tic = time.time()
 
     # set scores = log(BF)
     config_scores, max_BF = calculate_BFs(
@@ -168,9 +170,9 @@ if __name__ == "__main__":
         config_scores, n_causal2log_prior, max_BF
     )
 
-    if configs_method == 'SSSConfigurations':
-        # Returning early for SSS since we don't have all the scores for each model
-        exit(0)
+    # if configs_method == 'SSSConfigurations':
+    #     # Returning early for SSS since we don't have all the scores for each model
+    #     exit(0)
 
     # set null_model_score
     null_model_score = 10 ** (
@@ -187,3 +189,4 @@ if __name__ == "__main__":
     # rho-confidence set
     rho_scores = get_rhos(rho, ranking, config_scores, max_causal, total_score)
     print_rhos(rho_scores, ranking, data, os.path.join(outdir, "rhos.tsv"))
+    print(f"PyFM ran successfully in {round(time.time() - tic,2)} seconds")

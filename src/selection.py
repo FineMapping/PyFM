@@ -14,14 +14,20 @@ def get_rhos(rho, ranking, config_scores, max_causal, total_score):
         # subsets.extend(k_combinations)
         new_subsets = [[ranking[k - 1]]]
         if len(subsets) > 0:
-            new_subsets.extend([subset + [ranking[k - 1]] for subset in subsets if len(subset)<max_causal])
+            new_subsets.extend(
+                [
+                    subset + [ranking[k - 1]]
+                    for subset in subsets
+                    if len(subset) < max_causal
+                ]
+            )
         for new_subset in new_subsets:
             config = tuple(sorted(new_subset))
             if config in config_scores[len(new_subset)]:
                 subsets_score += 10 ** config_scores[len(new_subset)][config]
-        rho_scores.append(subsets_score/total_score)
+        rho_scores.append(subsets_score / total_score)
         subsets.extend(new_subsets)
-        if (round(rho_scores[-1],7) >= rho):
+        if round(rho_scores[-1], 7) >= rho:
             break
     return rho_scores
 
