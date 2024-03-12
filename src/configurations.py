@@ -180,8 +180,7 @@ class SSSConfigurations(Configurations):
         best_config_index = np.argmax(neighbor_scores)
 
         # Weighted by score
-        weights = np.power(neighbor_scores, self.alpha1)
-
+        weights = np.power(neighbor_scores - min(neighbor_scores.min(), 0), self.alpha1)        
         random_model_index = np.random.choice(
             np.arange(len(neighbor_scores)), p=weights / weights.sum()
         )
@@ -208,10 +207,10 @@ class SSSConfigurations(Configurations):
                     ),
                 )
             )
-            neighbor_scores = [
+            neighbor_scores = np.array([
                 neighbor[1] for neighbor in neighbors if neighbor[0] is not None
-            ]
-            weights = np.power(np.array(neighbor_scores), self.alpha2)
+            ])
+            weights = np.power(neighbor_scores - min(neighbor_scores.min(), 0), self.alpha2)
             neighbors = [
                 neighbor[0] for neighbor in neighbors if neighbor[0] is not None
             ]
