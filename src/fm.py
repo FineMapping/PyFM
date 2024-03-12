@@ -81,11 +81,6 @@ def parse_args():
         default='None',
     )
     parser.add_argument(
-        "--Max-Cache-Size",
-        help=f"""Max Size of Cache for Score Config in SSS""",
-        default=1000000,
-    )
-    parser.add_argument(
         "-p",
         "--rho",
         default=1,
@@ -117,8 +112,7 @@ def parse_args():
         'SSS_iterations': int(params.SSS_iterations), 
         'SSS_alpha1': float(params.SSS_alpha1), 
         'SSS_alpha2': float(params.SSS_alpha2),
-        'Random_Seed': eval(params.Random_Seed),
-        'max_cache_size': int(params.Max_Cache_Size)
+        'Random_Seed': eval(params.Random_Seed)
     }
 
     rho = float(params.rho)
