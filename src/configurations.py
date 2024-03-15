@@ -73,7 +73,7 @@ class Configurations:
                 key=lambda config_score: config_score[1],
                 reverse=True,
             ):
-                f.write(f"{list(config)}\t{round(score,4)}\n")
+                f.write(f"{config}\t{round(score,4)}\n")
 
 
 class AllConfigurations(Configurations):
@@ -130,9 +130,11 @@ class SSSConfigurations(Configurations):
 
     def __init__(self, **kwarg):
         super().__init__(**kwarg)
-        current_causal = (self.max_causal // 2) if self.max_causal > 1 else 1
-        self.current_model = np.arange(1, current_causal + 1)
-        self.not_included = set(range(current_causal + 1, self.m + 1))
+        np.random.seed(self.optimization_params["Random_Seed"])
+
+        num_starting_causal_variants = np.random.randint(self.max_causal+1)
+        self.current_model = np.random.choice(np.arange(1, self.m + 1), num_starting_causal_variants, replace=False)
+        self.not_included = set(range(1, self.m + 1)) - set(self.current_model)
 
         self.best_config = self.current_model.copy()
         self.best_score = self.score_config(self.current_model)
@@ -142,7 +144,7 @@ class SSSConfigurations(Configurations):
         self.alpha1 = self.optimization_params["SSS_alpha1"]
         self.alpha2 = self.optimization_params["SSS_alpha2"]
 
-        np.random.seed(self.optimization_params["Random_Seed"])
+        
 
     def get_negative_neighborhood(self):
         if not len(self.current_model) - 1:
