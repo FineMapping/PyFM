@@ -1,3 +1,12 @@
 src/__pycache__
 *.ipynb
 .ipynb_checkpoints
+/simulated_data_run_cv2/
+/simulated_data_run_cv4/
+/simulated_data_run_cv4_k3/
+/simulated_data_run_cv4_v2/
+/simulated_data_run_cv5/
+/pyfm_results/
+/ready_data/
+/sampling_run/
+/test_output/

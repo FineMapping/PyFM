@@ -9,7 +9,7 @@ def get_rhos(rho, ranking, config_scores, max_causal, total_score):
     rho_scores = []
     subsets_score = 0
     subsets = []
-    for k in range(1, 20):
+    for k in range(1, 150):
         # k_combinations = list(combinations(rho_set,k))
         # subsets.extend(k_combinations)
         new_subsets = [[ranking[k - 1]]]
@@ -27,8 +27,8 @@ def get_rhos(rho, ranking, config_scores, max_causal, total_score):
                 subsets_score += 10 ** config_scores[len(new_subset)][config]
         rho_scores.append(subsets_score / total_score)
         subsets.extend(new_subsets)
-        if round(rho_scores[-1], 7) >= rho:
-            break
+        # if round(rho_scores[-1], 7) >= rho:
+        #     break
     return rho_scores
 
 

@@ -55,18 +55,22 @@ For further explanation of the arguments, check CaviarBF arguments since they ar
  [CaviarBF Manual](CaviarBF_Manual.pdf) 
 (if does not open on webpage, please download the PDF file from above and open locally)
 
-| Argument         | Type    | Description                                                       |
-|------------------|---------|-------------------------------------------------------------------|
-| `-z`             | FILE    | zfile                                                             |
-| `-r`             | FILE    | rfile containing pairwise LD correlation matrix                   |
-| `-o`             | DIR     | output directory                                                  |
-| `-n`             | int     | (default: 0) sample number                                        |
-| `-c`             | int     | (default: 3) maximum number of causal variants considered         |
-| `-t`             | int     | (default: 0) prior type                                           |
-| `-e`             | float   | (default: 0) epsilon, noise factor added to correlation matrix    |
-| `-a`             | [float] | (default: 0.1 0.2 0.4 0.8 1.6) priors to run on                   |
-| `-p`             | float   | (default: 1; i.e. reports all) rho cutoff to be used              |
-| `--exclude_null` | bool    | (optional) if used, null model score is excluded from total score |
+| Argument           | Type    | Description                                                                        |
+|--------------------|---------|------------------------------------------------------------------------------------|
+| `-z`               | FILE    | zfile                                                                              |
+| `-r`               | FILE    | rfile containing pairwise LD correlation matrix                                    |
+| `-o`               | DIR     | output directory                                                                   |
+| `-n`               | int     | (default: 0) sample number                                                         |
+| `-c`               | int     | (default: 3) maximum number of causal variants considered                          |
+| `-t`               | int     | (default: 0) prior type                                                            |
+| `-e`               | float   | (default: 0) epsilon, noise factor added to correlation matrix                     |
+| `-a`               | [float] | (default: 0.1 0.2 0.4 0.8 1.6) priors to run on                                    |
+| `-p`               | float   | (default: 1; i.e. reports all) rho cutoff to be used                               |
+| `--exclude_null`   | bool    | (optional) if used, null model score is excluded from total score                  |
+| `--configs-method` | str     | (default: AllConfigurations, i.e. exhaustive search) use SSSConfigurations for SSS |
+| `--SSS-iterations` | int     | (default: 100) number of iterations for SSS to run, if SSS is selected             |
+| `--SSS-alpha1`     | float   | (default: 1.5) temperature parameter for SSS sampling stage 1                      |
+| `--SSS-alpha2`     | float   | (default: 1.5) temperature parameter for SSS sampling stage 2                      |
 
 
 ## Compare results with CaviarBF
@@ -160,3 +164,6 @@ Run FINEMAP (in its own executable DIR)
 ## References
 * <a id="1">[1]</a> Chen W, Larrabee BR, Ovsyannikova IG, Kennedy RB, Haralambieva IH, Poland GA, Schaid DJ. Fine Mapping Causal Variants with an Approximate Bayesian Method Using Marginal Test Statistics. Genetics. 2015 Jul;200(3):719-36. doi: 10.1534/genetics.115.176107. Epub 2015 May 6. PMID: 25948564; PMCID: PMC4512539.
 * <a id="2">[2]</a> Christian Benner, Chris C.A. Spencer, Aki S. Havulinna, Veikko Salomaa, Samuli Ripatti, Matti Pirinen, FINEMAP: efficient variable selection using summary data from genome-wide association studies, Bioinformatics, Volume 32, Issue 10, May 2016, Pages 1493–1501, https://doi.org/10.1093/bioinformatics/btw018
+* <a id="3">[3]</a> Elison, Weston, CSE_284_Finemapping (2024), GitHub repository, https://github.com/westonelison/CSE_284_Finemapping
+* <a id="4">[4]</a> Fortune MD, Wallace C. simGWAS: a fast method for simulation of large scale case-control GWAS summary statistics. Bioinformatics. 2019 Jun 1;35(11):1901-1906. doi: 10.1093/bioinformatics/bty898. PMID: 30371734; PMCID: PMC6546134.
+
