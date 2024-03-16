@@ -6,8 +6,7 @@ We copied the example data from CaviarBF and FineMap into the `example` subdirec
 
 *We prepared 2 example runs from command-line. Example 1's PIP and Rho match up
 nearly exactly with the CaviarBF results (difference arise from the Cholesky
-Decomposition round-offs). Example 2's Rho values don't match up quite
-well, though the SNP selections are the same (under investigation).*
+Decomposition round-offs). Example 2's Rho values don't match up exactly, but they are very close and the difference is likely due to different Cholesky Decomposition packages.*
 
 **Example 1**
 ```shell
@@ -152,7 +151,9 @@ Similar to PyFM, but `-o` is a PATH to the FILE, instead of PATH to DIR
   -s -m 55 -p 0 > caviarbf_results/log.txt
 ```
 
-Run FINEMAP (in its own executable DIR)
+### FINEMAP
+FINEMAP can be downloaded and ran directly. This run shows one of its compiled example.
+
 ```shell
 ./finemap_v1.4.2_x86_64 \
   --sss \
@@ -160,6 +161,15 @@ Run FINEMAP (in its own executable DIR)
   --dataset 1
 ```
 
+### Benchmark against FINEMAP
+Batch code for simulation and running the different tools are in the `simulation` folder.
+Simulation was done using Elison, Weston's tool.
+Analyses are in the `generate_plots` notebook.
+
+### Known Issues
+1) Potential memory leak when running k >= 5 in SSS mode
+2) Certain ld-file and simulated z-file can cause issue during Cholesky Decomposition, result in halting SSS mode. Simply re-simulate those cases with slightly different noise.
+3) Longer runtime than CaviarBF and FINEMAP, in exhaustive and SSS mode, respectively, due to lack of optimization and coded in Python
 
 ## References
 * <a id="1">[1]</a> Chen W, Larrabee BR, Ovsyannikova IG, Kennedy RB, Haralambieva IH, Poland GA, Schaid DJ. Fine Mapping Causal Variants with an Approximate Bayesian Method Using Marginal Test Statistics. Genetics. 2015 Jul;200(3):719-36. doi: 10.1534/genetics.115.176107. Epub 2015 May 6. PMID: 25948564; PMCID: PMC4512539.
