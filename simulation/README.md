@@ -7,3 +7,6 @@ by following instruction on Elison's tool (using plink).
 Batch code are provided to easily generate many simulation, and run them using either PyFM or 
 FINEMAP.
 - Please change the file paths when using the batch codes
+
+Basically, encode your PyFM run parameters in `batch_run.sh`, and in the `job_assigner.sh`
+specify input and output DIR. Call on `job_assigner.sh` to run batch.
